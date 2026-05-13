@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Signup</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+    135deg,
+    #dbeafe,
+    #eef2ff
+    );
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:30px;
+}
+
+.signup-container{
+
+    width:100%;
+    max-width:520px;
+
+    background:white;
+
+    padding:50px;
+
+    border-radius:35px;
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,0.08);
+
+    text-align:center;
+
+    position:relative;
+
+    overflow:hidden;
+}
+
+.circle{
+
+    position:absolute;
+
+    width:180px;
+    height:180px;
+
+    background:#dbeafe;
+
+    border-radius:50%;
+
+    top:-70px;
+    right:-70px;
+}
+
+.icon-box{
+
+    width:120px;
+    height:120px;
+
+    background:#eef2ff;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    margin:auto;
+
+    margin-bottom:30px;
+
+    position:relative;
+
+    z-index:2;
+}
+
+.icon-box i{
+
+    font-size:55px;
+
+    color:#2563eb;
+}
+
+h1{
+
+    color:#172554;
+
+    font-size:42px;
+
+    margin-bottom:15px;
+}
+
+p{
+
+    color:#555;
+
+    line-height:1.8;
+
+    margin-bottom:35px;
+
+    font-size:16px;
+}
+
+.google-btn{
+
+    width:100%;
+
+    border:none;
+
+    background:white;
+
+    color:#222;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,0.08);
+
+    transition:0.3s;
+}
+
+.google-btn:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 12px 25px rgba(0,0,0,0.12);
+}
+
+.google-btn i{
+
+    margin-right:12px;
+
+    color:#ea4335;
+}
+
+.info{
+
+    margin-top:30px;
+
+    color:#666;
+
+    line-height:1.7;
+
+    font-size:15px;
+}
+
+.info i{
+
+    color:#2563eb;
+
+    margin-right:8px;
+}
+
+.home-link{
+
+    display:inline-block;
+
+    margin-top:30px;
+
+    text-decoration:none;
+
+    color:#2563eb;
+
+    font-weight:bold;
+
+    transition:0.3s;
+}
+
+.home-link:hover{
+
+    color:#1e3a8a;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="signup-container">
+
+    <div class="circle"></div>
+
+    <div class="icon-box">
+
+        <i class="fa fa-user-plus"></i>
+
+    </div>
+
+    <h1>
+
+        Smart Signup
+
+    </h1>
+
+    <p>
+
+        Continue with Google to access
+        the Smart Food Traceability System.
+
+    </p>
+
+    <!-- GOOGLE LOGIN -->
+
+    <a href="/google-login">
+
+        <button class="google-btn">
+
+            <i class="fa-brands fa-google"></i>
+
+            Continue with Google
+
+        </button>
+
+    </a>
+
+    <!-- INFO -->
+
+    <div class="info">
+
+        <p>
+
+            <i class="fa fa-shield"></i>
+
+            Secure Google Authentication
+
+        </p>
+
+        <p>
+
+            <i class="fa fa-link"></i>
+
+            Blockchain Enabled Tracking
+
+        </p>
+
+        <p>
+
+            <i class="fa fa-qrcode"></i>
+
+            QR Based Supply Chain System
+
+        </p>
+
+    </div>
+
+    <!-- HOME -->
+
+    <a href="/"
+       class="home-link">
+
+        <i class="fa fa-house"></i>
+
+        Back to Home
+
+    </a>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Trace System</title>
+
+    <!-- FONT AWESOME -->
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- QR SCANNER -->
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+            background:#eef2ff;
+            overflow-x:hidden;
+        }
+
+        .page{
+            max-width:1450px;
+            margin:auto;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar{
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            padding:25px 40px;
+        }
+
+        .logo h1{
+
+            color:#172554;
+            font-size:42px;
+        }
+
+        .logo p{
+
+            color:#555;
+            margin-top:5px;
+        }
+
+        .nav-buttons{
+
+            display:flex;
+            gap:15px;
+        }
+
+        .nav-btn{
+
+            text-decoration:none;
+
+            background:white;
+
+            color:#2563eb;
+
+            padding:14px 24px;
+
+            border-radius:14px;
+
+            font-weight:bold;
+
+            box-shadow:0 5px 15px rgba(0,0,0,0.08);
+
+            transition:0.3s;
+        }
+
+        .nav-btn:hover{
+
+            background:#2563eb;
+            color:white;
+            transform:translateY(-3px);
+        }
+
+        /* ================= HERO ================= */
+
+        .hero{
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            padding:60px 40px;
+
+            gap:60px;
+        }
+
+        .hero-left{
+
+            flex:1;
+        }
+
+        .hero-left h1{
+
+            font-size:75px;
+            color:#172554;
+
+            line-height:1.1;
+
+            margin-bottom:25px;
+        }
+
+        .hero-left span{
+
+            color:#2563eb;
+        }
+
+        .hero-left p{
+
+            font-size:20px;
+
+            color:#555;
+
+            line-height:1.8;
+
+            margin-bottom:35px;
+        }
+
+        .hero-buttons{
+
+            display:flex;
+            gap:20px;
+            flex-wrap:wrap;
+        }
+
+        .hero-btn{
+
+            border:none;
+
+            background:#2563eb;
+
+            color:white;
+
+            padding:18px 30px;
+
+            border-radius:16px;
+
+            font-size:18px;
+
+            font-weight:bold;
+
+            cursor:pointer;
+
+            transition:0.3s;
+        }
+
+        .hero-btn:hover{
+
+            background:#1e3a8a;
+
+            transform:translateY(-4px);
+        }
+
+        /* ================= QR CARD ================= */
+
+        .hero-image{
+
+            flex:1;
+
+            display:flex;
+            justify-content:center;
+        }
+
+        .hero-card{
+
+            background:white;
+
+            padding:40px;
+
+            border-radius:35px;
+
+            box-shadow:0 15px 30px rgba(0,0,0,0.08);
+
+            text-align:center;
+
+            width:420px;
+        }
+
+        .hero-card h2{
+
+            color:#172554;
+
+            margin-bottom:18px;
+
+            font-size:34px;
+        }
+
+        .hero-card p{
+
+            color:#555;
+
+            line-height:1.7;
+
+            margin-bottom:25px;
+        }
+
+        #reader{
+
+            width:320px;
+
+            margin:auto;
+
+            margin-top:25px;
+
+            display:none;
+
+            border-radius:20px;
+
+            overflow:hidden;
+        }
+
+        /* ================= FEATURES ================= */
+
+        .features{
+
+            padding:70px 40px;
+        }
+
+        .features-title{
+
+            text-align:center;
+
+            margin-bottom:55px;
+        }
+
+        .features-title h1{
+
+            color:#172554;
+
+            font-size:46px;
+
+            margin-bottom:12px;
+        }
+
+        .features-title p{
+
+            color:#555;
+
+            font-size:18px;
+        }
+
+        .feature-grid{
+
+            display:grid;
+
+            grid-template-columns:
+            repeat(auto-fit,minmax(280px,1fr));
+
+            gap:30px;
+        }
+
+        .feature-card{
+
+            background:white;
+
+            padding:35px;
+
+            border-radius:30px;
+
+            text-align:center;
+
+            box-shadow:0 10px 25px rgba(0,0,0,0.08);
+
+            transition:0.3s;
+        }
+
+        .feature-card:hover{
+
+            transform:translateY(-8px);
+        }
+
+        .feature-card i{
+
+            font-size:55px;
+
+            color:#2563eb;
+
+            margin-bottom:22px;
+        }
+
+        .feature-card h2{
+
+            color:#172554;
+
+            margin-bottom:15px;
+        }
+
+        .feature-card p{
+
+            color:#555;
+
+            line-height:1.7;
+        }
+
+        /* ================= INFO ================= */
+
+        .info{
+
+            padding:40px;
+        }
+
+        .info-box{
+
+            background:linear-gradient(
+                135deg,
+                #2563eb,
+                #1e3a8a
+            );
+
+            color:white;
+
+            padding:50px;
+
+            border-radius:35px;
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            gap:40px;
+        }
+
+        .info-left h1{
+
+            font-size:45px;
+
+            margin-bottom:18px;
+        }
+
+        .info-left p{
+
+            line-height:1.8;
+
+            font-size:18px;
+        }
+
+        .info-right i{
+
+            font-size:130px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        .footer{
+
+            text-align:center;
+
+            padding:45px;
+
+            color:#555;
+        }
+
+        @media(max-width:950px){
+
+            .hero{
+
+                flex-direction:column;
+            }
+
+            .info-box{
+
+                flex-direction:column;
+                text-align:center;
+            }
+
+            .hero-left h1{
+
+                font-size:55px;
+            }
+
+            .hero-card{
+
+                width:100%;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- ================= NAVBAR ================= -->
+
+    <div class="navbar">
+
+        <div class="logo">
+
+            <h1>
+
+                Trace System
+
+            </h1>
+
+            <p>
+
+                Blockchain Food Traceability
+
+            </p>
+
+        </div>
+
+        <div class="nav-buttons">
+
+            <div class="nav-buttons">
+
+            <a href="/signup"
+            class="nav-btn">
+                Sign In
+            </a>
+
+            </div>  
+        </div>
+
+    </div>
+
+    <!-- ================= HERO ================= -->
+
+    <div class="hero">
+
+        <!-- LEFT -->
+
+        <div class="hero-left">
+
+            <h1>
+
+                Smart Food
+                <span>
+
+                    Tracking
+
+                </span>
+
+            </h1>
+
+            <p>
+
+                Track every product journey from farm to retail
+                using blockchain technology and live QR tracking.
+
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="/user">
+
+                    <button class="hero-btn">
+
+                        <i class="fa fa-magnifying-glass"></i>
+
+                        Track By Batch ID
+
+                    </button>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div class="hero-image">
+
+            <div class="hero-card">
+
+                <h2>
+
+                    Scan QR Code
+
+                </h2>
+
+                <p>
+
+                    Scan product QR to instantly
+                    track complete food journey.
+
+                </p>
+
+                <button onclick="startScanner()"
+                        class="hero-btn">
+
+                    <i class="fa fa-qrcode"></i>
+
+                    Start Scanner
+
+                </button>
+
+                <!-- QR READER -->
+
+                <div id="reader"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= FEATURES ================= -->
+
+    <div class="features">
+
+        <div class="features-title">
+
+            <h1>
+
+                Supply Chain Features
+
+            </h1>
+
+            <p>
+
+                Transparent and secure food supply chain system
+
+            </p>
+
+        </div>
+
+        <div class="feature-grid">
+
+            <!-- FARM -->
+
+            <div class="feature-card">
+
+                <i class="fa fa-seedling"></i>
+
+                <h2>
+
+                    Farming Stage
+
+                </h2>
+
+                <p>
+
+                    Monitor seed date, harvest details and fertilizer usage.
+
+                </p>
+
+            </div>
+
+            <!-- FACTORY -->
+
+            <div class="feature-card">
+
+                <i class="fa fa-industry"></i>
+
+                <h2>
+
+                    Factory Processing
+
+                </h2>
+
+                <p>
+
+                    Track processing and packaging information securely.
+
+                </p>
+
+            </div>
+
+            <!-- WAREHOUSE -->
+
+            <div class="feature-card">
+
+                <i class="fa fa-warehouse"></i>
+
+                <h2>
+
+                    Warehouse Storage
+
+                </h2>
+
+                <p>
+
+                    Monitor storage temperature and warehouse conditions.
+
+                </p>
+
+            </div>
+
+            <!-- TRANSPORT -->
+
+            <div class="feature-card">
+
+                <i class="fa fa-truck"></i>
+
+                <h2>
+
+                    Transport Tracking
+
+                </h2>
+
+                <p>
+
+                    Track shipment location, driver and vehicle details.
+
+                </p>
+
+            </div>
+
+            <!-- RETAIL -->
+
+            <div class="feature-card">
+
+                <i class="fa fa-store"></i>
+
+                <h2>
+
+                    Retail Monitoring
+
+                </h2>
+
+                <p>
+
+                    Verify retail shop, pricing and expiry information.
+
+                </p>
+
+            </div>
+
+            <!-- BLOCKCHAIN -->
+
+            <div class="feature-card">
+
+                <i class="fa fa-link"></i>
+
+                <h2>
+
+                    Blockchain Security
+
+                </h2>
+
+                <p>
+
+                    Tamper-proof blockchain system for trusted food tracking.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= INFO ================= -->
+
+    <div class="info">
+
+        <div class="info-box">
+
+            <div class="info-left">
+
+                <h1>
+
+                    Why Use Trace System?
+
+                </h1>
+
+                <p>
+
+                    Our blockchain-enabled traceability platform
+                    improves food safety, transparency and trust.
+                    Customers can instantly verify product journeys
+                    using QR technology.
+
+                </p>
+
+            </div>
+
+            <div class="info-right">
+
+                <i class="fa fa-shield-halved"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+
+    <div class="footer">
+
+        © 2026 Trace System | Blockchain Food Traceability
+
+    </div>
+
+</div>
+
+<!-- ================= QR SCRIPT ================= -->
+
+<script>
+
+function startScanner(){
+
+    document.getElementById(
+        "reader"
+    ).style.display = "block";
+
+    const html5QrCode =
+    new Html5Qrcode("reader");
+
+    html5QrCode.start(
+
+        {
+            facingMode: "environment"
+        },
+
+        {
+            fps: 10,
+            qrbox: 250
+        },
+
+        (decodedText) => {
+
+            window.location.href =
+            decodedText;
+
+        },
+
+        (errorMessage) => {
+
+        }
+
+    );
+}
+
+</script>
+
+</body>
+
+</html>

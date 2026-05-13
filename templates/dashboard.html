@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#eef2ff;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+
+    width:280px;
+
+    background:white;
+
+    height:100vh;
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    padding:30px 20px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+
+    overflow-y:auto;
+}
+
+.logo{
+
+    margin-bottom:40px;
+}
+
+.logo h1{
+
+    color:#172554;
+}
+
+.sidebar a{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    text-decoration:none;
+
+    color:#172554;
+
+    padding:16px;
+
+    border-radius:14px;
+
+    margin-bottom:12px;
+
+    font-weight:bold;
+
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+
+    background:#2563eb;
+
+    color:white;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+
+    margin-left:300px;
+
+    padding:30px;
+}
+
+/* ================= CARDS ================= */
+
+.card{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:25px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+
+    margin-bottom:30px;
+}
+
+.card h2{
+
+    color:#172554;
+
+    margin-bottom:15px;
+}
+
+.card p{
+
+    color:#555;
+
+    line-height:1.7;
+}
+
+/* ================= ROLE SWITCH ================= */
+
+.role-switch{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-top:20px;
+
+    flex-wrap:wrap;
+}
+
+.role-switch a{
+
+    text-decoration:none;
+}
+
+.role-btn{
+
+    border:none;
+
+    background:#dbeafe;
+
+    color:#172554;
+
+    padding:14px 24px;
+
+    border-radius:14px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.role-btn:hover{
+
+    background:#2563eb;
+
+    color:white;
+}
+
+.active-role{
+
+    background:#2563eb !important;
+
+    color:white !important;
+}
+
+/* ================= FORM ================= */
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(250px,1fr));
+
+    gap:20px;
+}
+
+.input-box{
+
+    display:flex;
+    flex-direction:column;
+}
+
+.input-box label{
+
+    margin-bottom:8px;
+
+    color:#172554;
+
+    font-weight:bold;
+}
+
+.input-box input,
+.input-box textarea{
+
+    padding:16px;
+
+    border:none;
+
+    background:#eef2ff;
+
+    border-radius:14px;
+
+    outline:none;
+}
+
+textarea{
+
+    resize:none;
+
+    height:120px;
+}
+
+.submit-btn{
+
+    margin-top:25px;
+
+    border:none;
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:18px 28px;
+
+    border-radius:16px;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+/* ================= BATCH ================= */
+
+.batch-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(320px,1fr));
+
+    gap:25px;
+}
+
+.batch-card{
+
+    background:#eef2ff;
+
+    padding:25px;
+
+    border-radius:20px;
+}
+
+.batch-card h3{
+
+    color:#172554;
+
+    margin-bottom:15px;
+}
+
+.batch-card p{
+
+    color:#555;
+
+    margin-bottom:10px;
+}
+
+.batch-card img{
+
+    width:180px;
+
+    margin-top:15px;
+}
+
+.track-btn{
+
+    display:inline-block;
+
+    margin-top:15px;
+
+    text-decoration:none;
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:12px 20px;
+
+    border-radius:12px;
+
+    font-weight:bold;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:900px){
+
+    .sidebar{
+
+        width:100%;
+
+        height:auto;
+
+        position:relative;
+    }
+
+    .main{
+
+        margin-left:0;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- ================= SIDEBAR ================= -->
+
+<div class="sidebar">
+
+    <div class="logo">
+
+        <h1>
+
+            Trace System
+
+        </h1>
+
+    </div>
+
+    <a href="#profile">
+
+        <i class="fa fa-user"></i>
+
+        My Profile
+
+    </a>
+
+    <a href="#roles">
+
+        <i class="fa fa-repeat"></i>
+
+        Role Selection
+
+    </a>
+
+    <a href="#batches">
+
+        <i class="fa fa-box"></i>
+
+        My Batches
+
+    </a>
+
+    <a href="#create">
+
+        <i class="fa fa-plus"></i>
+
+        Create Batch
+
+    </a>
+
+    <a href="#notifications">
+
+        <i class="fa fa-bell"></i>
+
+        Notifications
+
+    </a>
+
+    <a href="/">
+
+        <i class="fa fa-house"></i>
+
+        Home
+
+    </a>
+
+</div>
+
+<!-- ================= MAIN ================= -->
+
+<div class="main">
+
+    <!-- PROFILE -->
+
+    <div class="card"
+         id="profile">
+
+        <h2>
+
+            Welcome, {{ user }}
+
+        </h2>
+
+        <p>
+
+            Current Role:
+            <b>{{ role.title() }}</b>
+
+        </p>
+
+    </div>
+
+    <!-- ROLE SWITCH -->
+
+    <div class="card"
+         id="roles">
+
+        <h2>
+
+            Role Selection
+
+        </h2>
+
+        <div class="role-switch">
+
+            {% for r in roles %}
+
+            <a href="/dashboard?user={{ user }}&role={{ r }}">
+
+                <button
+                class="role-btn {% if role == r %}active-role{% endif %}">
+
+                    {{ r.title() }}
+
+                </button>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- CREATE BATCH -->
+
+    <div class="card"
+         id="create">
+
+        <h2>
+
+            {% if role == "farm" %}
+            Create New Batch
+            {% else %}
+            Update Batch
+            {% endif %}
+
+        </h2>
+
+        <form action="/add"
+              method="post">
+
+            <input type="hidden"
+                   name="updated_by"
+                   value="{{ user }}">
+
+            <div class="form-grid">
+
+                <div class="input-box">
+
+                    <label>
+
+                        Product Name
+
+                    </label>
+
+                    <input type="text"
+                           name="product"
+                           required>
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Location
+
+                    </label>
+
+                    <input type="text"
+                           name="location"
+                           required>
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Date
+
+                    </label>
+
+                    <input type="date"
+                           name="date"
+                           required>
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Time
+
+                    </label>
+
+                    <input type="time"
+                           name="time"
+                           required>
+
+                </div>
+
+                {% if role != "farm" %}
+
+                <div class="input-box">
+
+                    <label>
+
+                        Batch ID
+
+                    </label>
+
+                    <input type="text"
+                           name="batchId"
+                           required>
+
+                </div>
+
+                {% endif %}
+
+                <!-- FARM -->
+
+                {% if role == "farm" %}
+
+                <div class="input-box">
+
+                    <label>
+
+                        Seed Date
+
+                    </label>
+
+                    <input type="date"
+                           name="seed_date">
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Harvest Date
+
+                    </label>
+
+                    <input type="date"
+                           name="harvest_date">
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Fertilizer
+
+                    </label>
+
+                    <input type="text"
+                           name="fertilizer">
+
+                </div>
+
+                {% endif %}
+
+                <!-- FACTORY -->
+
+                {% if role == "factory" %}
+
+                <div class="input-box">
+
+                    <label>
+
+                        Packaging
+
+                    </label>
+
+                    <input type="text"
+                           name="packaging">
+
+                </div>
+
+                {% endif %}
+
+                <!-- WAREHOUSE -->
+
+                {% if role == "warehouse" %}
+
+                <div class="input-box">
+
+                    <label>
+
+                        Storage Temp
+
+                    </label>
+
+                    <input type="text"
+                           name="storage_temp">
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Shelf Number
+
+                    </label>
+
+                    <input type="text"
+                           name="shelf">
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Humidity
+
+                    </label>
+
+                    <input type="text"
+                           name="humidity">
+
+                </div>
+
+                {% endif %}
+
+                <!-- TRANSPORT -->
+
+                {% if role == "transport" %}
+
+                <div class="input-box">
+
+                    <label>
+
+                        Destination
+
+                    </label>
+
+                    <input type="text"
+                           name="destination">
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Vehicle
+
+                    </label>
+
+                    <input type="text"
+                           name="vehicle">
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Driver
+
+                    </label>
+
+                    <input type="text"
+                           name="driver">
+
+                </div>
+
+                {% endif %}
+
+                <!-- RETAIL -->
+
+                {% if role == "retail" %}
+
+                <div class="input-box">
+
+                    <label>
+
+                        Shop Name
+
+                    </label>
+
+                    <input type="text"
+                           name="shop_name">
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Price
+
+                    </label>
+
+                    <input type="text"
+                           name="price">
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+
+                        Expiry Date
+
+                    </label>
+
+                    <input type="date"
+                           name="expiry_date">
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+            <div class="input-box"
+                 style="margin-top:20px;">
+
+                <label>
+
+                    Additional Details
+
+                </label>
+
+                <textarea name="details"></textarea>
+
+            </div>
+
+            <button type="submit"
+                    class="submit-btn">
+
+                <i class="fa fa-floppy-disk"></i>
+
+                Submit
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- MY BATCHES -->
+
+    <div class="card"
+         id="batches">
+
+        <h2>
+
+            My Batches
+
+        </h2>
+
+        <div class="batch-grid">
+
+            {% for item in batches %}
+
+            <div class="batch-card">
+
+                <h3>
+
+                    {{ item.batchId }}
+
+                </h3>
+
+                <p>
+
+                    <b>Product:</b>
+                    {{ item.product }}
+
+                </p>
+
+                <p>
+
+                    <b>Location:</b>
+                    {{ item.location }}
+
+                </p>
+
+                <p>
+
+                    <b>Date:</b>
+                    {{ item.date }}
+
+                </p>
+
+                <img src="{{ item.qr }}">
+
+                <br>
+
+                <a href="/result?id={{ item.batchId }}"
+                   class="track-btn">
+
+                    Track Batch
+
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- NOTIFICATION -->
+
+    <div class="card"
+         id="notifications">
+
+        <h2>
+
+            Notifications
+
+        </h2>
+
+        <p>
+
+            ✔ Batch updated successfully
+
+        </p>
+
+        <p>
+
+            ✔ QR generated successfully
+
+        </p>
+
+        <p>
+
+            ✔ Supply chain connected
+
+        </p>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

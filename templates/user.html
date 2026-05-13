@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Track Product</title>
+
+    <!-- FONT AWESOME -->
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial,sans-serif;
+        }
+
+        body{
+
+            background:#eef2ff;
+
+            min-height:100vh;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            padding:30px;
+        }
+
+        .track-container{
+
+            width:100%;
+            max-width:550px;
+
+            background:white;
+
+            padding:45px;
+
+            border-radius:35px;
+
+            box-shadow:0 15px 30px rgba(0,0,0,0.08);
+
+            text-align:center;
+        }
+
+        .track-icon{
+
+            width:110px;
+            height:110px;
+
+            margin:auto;
+
+            background:#dbeafe;
+
+            border-radius:50%;
+
+            display:flex;
+            justify-content:center;
+            align-items:center;
+
+            margin-bottom:25px;
+        }
+
+        .track-icon i{
+
+            font-size:52px;
+
+            color:#2563eb;
+        }
+
+        h1{
+
+            color:#172554;
+
+            font-size:42px;
+
+            margin-bottom:15px;
+        }
+
+        p{
+
+            color:#555;
+
+            line-height:1.8;
+
+            margin-bottom:35px;
+        }
+
+        .input-box{
+
+            position:relative;
+
+            margin-bottom:25px;
+        }
+
+        .input-box i{
+
+            position:absolute;
+
+            left:18px;
+
+            top:19px;
+
+            color:#2563eb;
+
+            font-size:18px;
+        }
+
+        .input-box input{
+
+            width:100%;
+
+            padding:18px 18px 18px 52px;
+
+            border:none;
+
+            background:#eef2ff;
+
+            border-radius:16px;
+
+            font-size:17px;
+
+            outline:none;
+        }
+
+        .track-btn{
+
+            width:100%;
+
+            border:none;
+
+            background:#2563eb;
+
+            color:white;
+
+            padding:18px;
+
+            border-radius:18px;
+
+            font-size:18px;
+
+            font-weight:bold;
+
+            cursor:pointer;
+
+            transition:0.3s;
+        }
+
+        .track-btn:hover{
+
+            background:#1e3a8a;
+
+            transform:translateY(-3px);
+        }
+
+        .bottom-links{
+
+            margin-top:30px;
+
+            display:flex;
+            justify-content:center;
+
+            gap:15px;
+
+            flex-wrap:wrap;
+        }
+
+        .bottom-links a{
+
+            text-decoration:none;
+
+            color:#2563eb;
+
+            font-weight:bold;
+        }
+
+        .bottom-links a:hover{
+
+            text-decoration:underline;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="track-container">
+
+    <!-- ICON -->
+
+    <div class="track-icon">
+
+        <i class="fa fa-magnifying-glass-location"></i>
+
+    </div>
+
+    <!-- TITLE -->
+
+    <h1>
+
+        Track Product
+
+    </h1>
+
+    <p>
+
+        Enter your Batch ID to track complete
+        food journey from farm to retail.
+
+    </p>
+
+    <!-- FORM -->
+
+    <form action="/result"
+          method="get">
+
+        <div class="input-box">
+
+            <i class="fa fa-barcode"></i>
+
+            <input type="text"
+                   name="id"
+                   placeholder="Enter Batch ID"
+                   required>
+
+        </div>
+
+        <button type="submit"
+                class="track-btn">
+
+            <i class="fa fa-location-dot"></i>
+
+            Track Now
+
+        </button>
+
+    </form>
+
+    <!-- LINKS -->
+
+    <div class="bottom-links">
+
+        <a href="/">
+
+            <i class="fa fa-house"></i>
+
+            Home
+
+        </a>
+
+        <a href="/login">
+
+            <i class="fa fa-right-to-bracket"></i>
+
+            Login
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

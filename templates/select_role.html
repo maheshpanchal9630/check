@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Select Role</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    background:
+    linear-gradient(
+    135deg,
+    #dbeafe,
+    #eef2ff
+    );
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:30px;
+}
+
+.container{
+
+    width:100%;
+    max-width:600px;
+
+    background:white;
+
+    padding:45px;
+
+    border-radius:35px;
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,0.08);
+}
+
+.title{
+
+    text-align:center;
+
+    margin-bottom:35px;
+}
+
+.title h1{
+
+    color:#172554;
+
+    font-size:38px;
+
+    margin-bottom:12px;
+}
+
+.title p{
+
+    color:#666;
+
+    line-height:1.7;
+}
+
+/* ================= ROLE BOX ================= */
+
+.roles{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+}
+
+.role-item{
+
+    background:#eef2ff;
+
+    padding:22px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    transition:0.3s;
+
+    cursor:pointer;
+}
+
+.role-item:hover{
+
+    transform:translateY(-2px);
+
+    background:#dbeafe;
+}
+
+.role-item input{
+
+    width:22px;
+    height:22px;
+
+    accent-color:#2563eb;
+}
+
+.role-icon{
+
+    width:55px;
+    height:55px;
+
+    background:white;
+
+    border-radius:50%;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:#2563eb;
+
+    font-size:24px;
+}
+
+.role-content h3{
+
+    color:#172554;
+
+    margin-bottom:5px;
+}
+
+.role-content p{
+
+    color:#666;
+
+    font-size:14px;
+}
+
+/* ================= BUTTON ================= */
+
+.submit-btn{
+
+    width:100%;
+
+    margin-top:35px;
+
+    border:none;
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:18px;
+
+    border-radius:18px;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+.submit-btn:hover{
+
+    background:#1e3a8a;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:650px){
+
+    .container{
+
+        padding:30px 22px;
+    }
+
+    .title h1{
+
+        font-size:30px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- TITLE -->
+
+    <div class="title">
+
+        <h1>
+
+            Select Your Role
+
+        </h1>
+
+        <p>
+
+            Choose your role in the
+            Smart Food Traceability System.
+
+        </p>
+
+    </div>
+
+    <!-- FORM -->
+
+    <form action="/save-role"
+          method="post">
+
+        <div class="roles">
+
+            <!-- FARM -->
+
+            <label class="role-item">
+
+                <input type="radio"
+                       name="role"
+                       value="farm"
+                       required>
+
+                <div class="role-icon">
+
+                    <i class="fa fa-seedling"></i>
+
+                </div>
+
+                <div class="role-content">
+
+                    <h3>
+
+                        Farmer
+
+                    </h3>
+
+                    <p>
+
+                        Create and manage
+                        raw food batches.
+
+                    </p>
+
+                </div>
+
+            </label>
+
+            <!-- FACTORY -->
+
+            <label class="role-item">
+
+                <input type="radio"
+                       name="role"
+                       value="factory">
+
+                <div class="role-icon">
+
+                    <i class="fa fa-industry"></i>
+
+                </div>
+
+                <div class="role-content">
+
+                    <h3>
+
+                        Factory
+
+                    </h3>
+
+                    <p>
+
+                        Process and package
+                        products securely.
+
+                    </p>
+
+                </div>
+
+            </label>
+
+            <!-- WAREHOUSE -->
+
+            <label class="role-item">
+
+                <input type="radio"
+                       name="role"
+                       value="warehouse">
+
+                <div class="role-icon">
+
+                    <i class="fa fa-warehouse"></i>
+
+                </div>
+
+                <div class="role-content">
+
+                    <h3>
+
+                        Warehouse
+
+                    </h3>
+
+                    <p>
+
+                        Store and monitor
+                        inventory conditions.
+
+                    </p>
+
+                </div>
+
+            </label>
+
+            <!-- TRANSPORT -->
+
+            <label class="role-item">
+
+                <input type="radio"
+                       name="role"
+                       value="transport">
+
+                <div class="role-icon">
+
+                    <i class="fa fa-truck"></i>
+
+                </div>
+
+                <div class="role-content">
+
+                    <h3>
+
+                        Transport
+
+                    </h3>
+
+                    <p>
+
+                        Manage logistics
+                        and delivery tracking.
+
+                    </p>
+
+                </div>
+
+            </label>
+
+            <!-- RETAIL -->
+
+            <label class="role-item">
+
+                <input type="radio"
+                       name="role"
+                       value="retail">
+
+                <div class="role-icon">
+
+                    <i class="fa fa-store"></i>
+
+                </div>
+
+                <div class="role-content">
+
+                    <h3>
+
+                        Retail
+
+                    </h3>
+
+                    <p>
+
+                        Sell and track
+                        products in stores.
+
+                    </p>
+
+                </div>
+
+            </label>
+
+            <!-- CUSTOMER -->
+
+            <label class="role-item">
+
+                <input type="radio"
+                       name="role"
+                       value="customer">
+
+                <div class="role-icon">
+
+                    <i class="fa fa-user"></i>
+
+                </div>
+
+                <div class="role-content">
+
+                    <h3>
+
+                        Customer
+
+                    </h3>
+
+                    <p>
+
+                        Scan QR codes and
+                        verify product history.
+
+                    </p>
+
+                </div>
+
+            </label>
+
+        </div>
+
+        <!-- BUTTON -->
+
+        <button type="submit"
+                class="submit-btn">
+
+            Continue
+
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>
