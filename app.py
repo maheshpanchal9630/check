@@ -63,7 +63,7 @@ oauth.register(
 # BASE URL
 # =====================================================
 
-BASE_URL = "https://check.onrender.com"
+BASE_URL = "https://check-1-k59k.onrender.com"
 
 # =====================================================
 # STATIC FILES
