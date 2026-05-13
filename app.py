@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -12,6 +12,8 @@ from starlette.middleware.sessions import SessionMiddleware
 import qrcode
 import os
 import uuid
+import pdfplumber
+
 
 # =====================================================
 # APP
@@ -20,12 +22,14 @@ import uuid
 app = FastAPI()
 
 # =====================================================
-# SESSION MIDDLEWARE
+# SESSION
 # =====================================================
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key="SECRET_KEY"
+    secret_key="SECRET_KEY",
+    same_site="lax",
+    https_only=True
 )
 
 # =====================================================
@@ -63,11 +67,13 @@ oauth.register(
 # BASE URL
 # =====================================================
 
-BASE_URL = "https://check-1-k59k.onrender.com"
+BASE_URL = "https://YOUR-RENDER-APP.onrender.com"
 
 # =====================================================
 # STATIC FILES
 # =====================================================
+
+os.makedirs("static/qr", exist_ok=True)
 
 app.mount(
     "/static",
@@ -76,20 +82,20 @@ app.mount(
 )
 
 # =====================================================
+# UPLOADS
+# =====================================================
+
+os.makedirs(
+    "uploads",
+    exist_ok=True
+)
+
+# =====================================================
 # TEMPLATES
 # =====================================================
 
 templates = Jinja2Templates(
     directory="templates"
-)
-
-# =====================================================
-# QR FOLDER
-# =====================================================
-
-os.makedirs(
-    "static/qr",
-    exist_ok=True
 )
 
 # =====================================================
@@ -106,8 +112,10 @@ users_col = db["users"]
 
 trace_col = db["trace"]
 
+notification_col = db["notifications"]
+
 # =====================================================
-# HOME PAGE
+# HOME
 # =====================================================
 
 @app.get("/", response_class=HTMLResponse)
@@ -121,7 +129,7 @@ def home(request: Request):
     )
 
 # =====================================================
-# SIGNUP PAGE
+# SIGNUP
 # =====================================================
 
 @app.get("/signup", response_class=HTMLResponse)
@@ -135,7 +143,7 @@ def signup_page(request: Request):
     )
 
 # =====================================================
-# USER TRACK PAGE
+# USER PAGE
 # =====================================================
 
 @app.get("/user", response_class=HTMLResponse)
@@ -167,7 +175,7 @@ async def google_login(request: Request):
     )
 
 # =====================================================
-# GOOGLE AUTH
+# AUTH
 # =====================================================
 
 @app.get("/auth")
@@ -183,15 +191,13 @@ async def auth(request: Request):
 
     email = user["email"]
 
-    # CHECK USER EXISTS
-
     existing_user = users_col.find_one({
 
         "email": email
 
     })
 
-   # EXISTING USER
+    # EXISTING USER
 
     if existing_user:
 
@@ -287,7 +293,19 @@ def save_role(
 
         "role": role,
 
-        "password": "google-auth"
+        "auth_type": "google"
+
+    })
+
+    notification_col.insert_one({
+
+        "user": username,
+
+        "role": role,
+
+        "message": "🎉 Welcome to Smart Traceability System",
+
+        "status": "unread"
 
     })
 
@@ -323,6 +341,18 @@ def dashboard(
 
     )
 
+    notifications = list(
+
+        notification_col.find(
+
+            {"user": user},
+
+            {"_id": 0}
+
+        )
+
+    )
+
     return templates.TemplateResponse(
 
         request=request,
@@ -333,7 +363,8 @@ def dashboard(
 
             "user": user,
             "role": role,
-            "batches": batches
+            "batches": batches,
+            "notifications": notifications
 
         }
 
@@ -359,19 +390,14 @@ def add_trace(
     harvest_date: str = Form(None),
     fertilizer: str = Form(None),
 
+    processing_method: str = Form(None),
     packaging: str = Form(None),
 
     storage_temp: str = Form(None),
-    shelf: str = Form(None),
     humidity: str = Form(None),
 
-    destination: str = Form(None),
     vehicle: str = Form(None),
-    driver: str = Form(None),
-
-    shop_name: str = Form(None),
-    price: str = Form(None),
-    expiry_date: str = Form(None)
+    driver: str = Form(None)
 
 ):
 
@@ -407,7 +433,7 @@ def add_trace(
 
             }
 
-    # QR GENERATE
+    # QR
 
     qr_url = f"{BASE_URL}/result?id={batchId}"
 
@@ -449,27 +475,160 @@ def add_trace(
         "harvest_date": harvest_date,
         "fertilizer": fertilizer,
 
+        "processing_method": processing_method,
         "packaging": packaging,
 
         "storage_temp": storage_temp,
-        "shelf": shelf,
         "humidity": humidity,
 
-        "destination": destination,
         "vehicle": vehicle,
         "driver": driver,
 
-        "shop_name": shop_name,
-        "price": price,
-        "expiry_date": expiry_date,
+        "ai_status": "Pending",
+        "ai_reason": "Not analyzed",
 
         "qr": f"/static/qr/{qr_filename}"
+
+    })
+
+    notification_col.insert_one({
+
+        "user": updated_by,
+
+        "role": role,
+
+        "message": f"📦 Batch {batchId} Updated Successfully",
+
+        "status": "unread"
 
     })
 
     return RedirectResponse(
 
         url=f"/dashboard?user={updated_by}&role={role}",
+
+        status_code=303
+    )
+
+# =====================================================
+# AI ANALYSIS
+# =====================================================
+
+@app.post("/ai-analysis")
+async def ai_analysis(
+
+    batchId: str = Form(...),
+
+    report: UploadFile = File(...)
+
+):
+
+    # SAVE FILE
+
+    file_path = f"uploads/{report.filename}"
+
+    with open(file_path, "wb") as f:
+
+        content = await report.read()
+
+        f.write(content)
+
+    extracted_text = ""
+
+    # PDF READ
+
+    if report.filename.endswith(".pdf"):
+
+        with pdfplumber.open(file_path) as pdf:
+
+            for page in pdf.pages:
+
+                text = page.extract_text()
+
+                if text:
+                    extracted_text += text
+
+   
+
+    # AI LOGIC
+
+    status = "VERIFIED"
+
+    reason = "Processed product matches farmer batch"
+
+    text_lower = extracted_text.lower()
+
+    if "high chemical" in text_lower:
+
+        status = "NOT VERIFIED"
+
+        reason = "High chemical content detected"
+
+    if "unsafe" in text_lower:
+
+        status = "NOT VERIFIED"
+
+        reason = "Unsafe food detected"
+
+    if "contaminated" in text_lower:
+
+        status = "NOT VERIFIED"
+
+        reason = "Food contamination detected"
+
+    # UPDATE DB
+
+    trace_col.update_one(
+
+        {"batchId": batchId},
+
+        {
+
+            "$set": {
+
+                "ai_status": status,
+
+                "ai_reason": reason,
+
+                "lab_report": report.filename
+
+            }
+
+        }
+
+    )
+
+    batch = trace_col.find_one({
+
+        "batchId": batchId
+
+    })
+
+    # NOTIFICATION
+
+    if status == "VERIFIED":
+
+        message = "🎉 Congratulations! Product Successfully Verified"
+
+    else:
+
+        message = f"⚠ Verification Failed : {reason}"
+
+    notification_col.insert_one({
+
+        "user": batch["updated_by"],
+
+        "role": "factory",
+
+        "message": message,
+
+        "status": "unread"
+
+    })
+
+    return RedirectResponse(
+
+        url=f"/dashboard?user={batch['updated_by']}&role=factory",
 
         status_code=303
     )
