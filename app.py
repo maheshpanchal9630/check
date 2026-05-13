@@ -67,7 +67,7 @@ oauth.register(
 # BASE URL
 # =====================================================
 
-BASE_URL = "https://YOUR-RENDER-APP.onrender.com"
+BASE_URL = "https://check-1k59k.onrender.com"
 
 # =====================================================
 # STATIC FILES
