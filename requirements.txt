@@ -8,3 +8,8 @@ pillow
 authlib
 itsdangerous
 httpx
+pdfplumber
+opencv-python-headless
+numpy
+torch
+torchvision
