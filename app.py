@@ -72,7 +72,7 @@ oauth.register(
 # BASE URL
 # =====================================================
 
-BASE_URL = "https://heisencoders-1.onrender.com"
+BASE_URL = "http://127.0.0.1:8000"
 
 # =====================================================
 # CREATE FOLDERS
