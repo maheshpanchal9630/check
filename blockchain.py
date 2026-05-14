@@ -1,106 +1,176 @@
 # =====================================================
 # blockchain.py
+# COMPLETE UPDATED VERSION
 # =====================================================
 
 import hashlib
 import json
 
 # =====================================================
-# HASH COMPUTE
+# CREATE HASH
 # =====================================================
 
-def compute_hash(data: dict, prev_hash: str) -> str:
+def compute_hash(data, prev_hash):
 
-    block_string = json.dumps(
-        data,
-        sort_keys=True,
-        default=str
-    ) + prev_hash
+    block_string = json.dumps({
+
+        "data": data,
+        "prev_hash": prev_hash
+
+    }, sort_keys=True).encode()
 
     return hashlib.sha256(
-        block_string.encode()
+        block_string
     ).hexdigest()
 
 # =====================================================
-# VERIFY CHAIN
+# VERIFY BLOCKCHAIN
 # =====================================================
 
-def verify_chain(trace_records: list) -> dict:
+def verify_chain(records):
 
-    if not trace_records:
+    # =====================================================
+    # EMPTY CHAIN
+    # =====================================================
+
+    if len(records) == 0:
 
         return {
+
             "valid": False,
-            "tampered_at": None,
-            "message": "No records found"
+
+            "message":
+            "No blockchain records found"
+
         }
 
     # =====================================================
-    # SORT BLOCKS
+    # SAFE SORT
     # =====================================================
 
-    trace_records = sorted(
-        trace_records,
-        key=lambda x: x.get("block_number", 0)
+    records = sorted(
+
+        records,
+
+        key=lambda x:
+        x.get("block_number", 0)
+
     )
 
     # =====================================================
-    # CHECK MISSING BLOCKS
+    # VERIFY CHAIN
     # =====================================================
 
-    expected = 1
+    for i in range(len(records)):
 
-    for rec in trace_records:
+        block = records[i]
 
-        if rec.get("block_number") != expected:
-
-            return {
-                "valid": False,
-                "tampered_at": expected,
-                "message": f"Block {expected} missing or deleted ❌"
-            }
-
-        expected += 1
-
-    # =====================================================
-    # VERIFY HASHES
-    # =====================================================
-
-    for i, record in enumerate(trace_records):
+        # =====================================================
+        # GENESIS BLOCK
+        # =====================================================
 
         if i == 0:
-            expected_prev = "0" * 64
-        else:
-            expected_prev = trace_records[i - 1]["hash"]
 
-        data_for_hash = {
+            if block.get("prev_hash") != "0" * 64:
 
-            k: v for k, v in record.items()
+                return {
 
-            if k not in [
-                "hash",
-                "prev_hash",
-                "_id"
-            ]
-        }
+                    "valid": False,
 
-        recalculated = compute_hash(
-            data_for_hash,
-            expected_prev
-        )
+                    "tampered_at": i + 1,
 
-        stored_hash = record.get("hash")
+                    "message":
+                    "Genesis block invalid ❌"
 
-        if recalculated != stored_hash:
+                }
+
+            continue
+
+        previous_block = records[i - 1]
+
+        # =====================================================
+        # HASH CHECK
+        # =====================================================
+
+        if block.get("prev_hash") != previous_block.get("hash"):
 
             return {
+
                 "valid": False,
+
                 "tampered_at": i + 1,
-                "message": f"Block {i + 1} tampered ❌"
+
+                "message":
+                f"Block {i+1} tampered ❌"
+
             }
 
+        # =====================================================
+        # RECREATE HASH
+        # =====================================================
+
+        data = {
+
+            "product":
+            block.get("product"),
+
+            "location":
+            block.get("location"),
+
+            "date":
+            block.get("date"),
+
+            "time":
+            block.get("time"),
+
+            "details":
+            block.get("details"),
+
+            "updated_by":
+            block.get("updated_by"),
+
+            "role":
+            block.get("role"),
+
+            "block_number":
+            block.get("block_number")
+
+        }
+
+        recalculated_hash = compute_hash(
+
+            data,
+
+            block.get("prev_hash")
+
+        )
+
+        # =====================================================
+        # DATA TAMPER CHECK
+        # =====================================================
+
+        if recalculated_hash != block.get("hash"):
+
+            return {
+
+                "valid": False,
+
+                "tampered_at": i + 1,
+
+                "message":
+                f"Block {i+1} data modified ❌"
+
+            }
+
+    # =====================================================
+    # SUCCESS
+    # =====================================================
+
     return {
+
         "valid": True,
-        "tampered_at": None,
-        "message": f"Blockchain verified — {len(trace_records)} blocks secure ✅"
+
+        "message":
+        "Blockchain verified successfully ✅"
+
     }
