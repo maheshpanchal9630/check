@@ -1,4 +1,9 @@
-from fastapi import FastAPI, Request, Form, UploadFile, File
+# =====================================================
+# app.py
+# FINAL FIXED VERSION
+# =====================================================
+
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -9,11 +14,11 @@ from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from starlette.middleware.sessions import SessionMiddleware
 
+from blockchain import compute_hash, verify_chain
+
 import qrcode
 import os
 import uuid
-import pdfplumber
-
 
 # =====================================================
 # APP
@@ -27,13 +32,13 @@ app = FastAPI()
 
 app.add_middleware(
     SessionMiddleware,
-    secret_key="SECRET_KEY",
+    secret_key="mysecretkey",
     same_site="lax",
-    https_only=True
+    https_only=False
 )
 
 # =====================================================
-# GOOGLE CONFIG
+# GOOGLE AUTH
 # =====================================================
 
 config_data = {
@@ -42,7 +47,7 @@ config_data = {
     "746534419250-cjt52oodigl73nbtjt799i5l87elcs2f.apps.googleusercontent.com",
 
     "GOOGLE_CLIENT_SECRET":
-    "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"
+    "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"
 
 }
 
@@ -67,27 +72,22 @@ oauth.register(
 # BASE URL
 # =====================================================
 
-BASE_URL = "https://check-1k59k.onrender.com"
+BASE_URL = "https://check-1-k59k.onrender.com"
 
 # =====================================================
-# STATIC FILES
+# CREATE FOLDERS
 # =====================================================
 
 os.makedirs("static/qr", exist_ok=True)
+
+# =====================================================
+# STATIC
+# =====================================================
 
 app.mount(
     "/static",
     StaticFiles(directory="static"),
     name="static"
-)
-
-# =====================================================
-# UPLOADS
-# =====================================================
-
-os.makedirs(
-    "uploads",
-    exist_ok=True
 )
 
 # =====================================================
@@ -122,24 +122,8 @@ notification_col = db["notifications"]
 def home(request: Request):
 
     return templates.TemplateResponse(
-
         request=request,
         name="home.html"
-
-    )
-
-# =====================================================
-# SIGNUP
-# =====================================================
-
-@app.get("/signup", response_class=HTMLResponse)
-def signup_page(request: Request):
-
-    return templates.TemplateResponse(
-
-        request=request,
-        name="signup.html"
-
     )
 
 # =====================================================
@@ -150,10 +134,65 @@ def signup_page(request: Request):
 def user_page(request: Request):
 
     return templates.TemplateResponse(
-
         request=request,
         name="user.html"
+    )
 
+# =====================================================
+# SIGNUP PAGE
+# =====================================================
+
+@app.get("/signup", response_class=HTMLResponse)
+def signup_page(request: Request):
+
+    return templates.TemplateResponse(
+        request=request,
+        name="signup.html"
+    )
+
+# =====================================================
+# NORMAL SIGNUP
+# =====================================================
+
+@app.post("/signup")
+def normal_signup(
+
+    username: str = Form(...),
+    email: str = Form(...),
+    role: str = Form(...)
+
+):
+
+    existing_user = users_col.find_one({
+        "email": email
+    })
+
+    if existing_user:
+
+        return {
+            "message": "User already exists"
+        }
+
+    users_col.insert_one({
+
+        "username": username,
+        "email": email,
+        "role": role
+
+    })
+
+    notification_col.insert_one({
+
+        "user": username,
+        "message": "Account Created Successfully"
+
+    })
+
+    return RedirectResponse(
+
+        url=f"/dashboard?user={username}&role={role}",
+
+        status_code=303
     )
 
 # =====================================================
@@ -163,19 +202,15 @@ def user_page(request: Request):
 @app.get("/google-login")
 async def google_login(request: Request):
 
-    redirect_uri = request.url_for(
-        "auth"
-    )
+    redirect_uri = request.url_for("auth")
 
     return await oauth.google.authorize_redirect(
-
         request,
         redirect_uri
-
     )
 
 # =====================================================
-# AUTH
+# AUTH CALLBACK
 # =====================================================
 
 @app.get("/auth")
@@ -192,76 +227,36 @@ async def auth(request: Request):
     email = user["email"]
 
     existing_user = users_col.find_one({
-
         "email": email
-
     })
-
-    # EXISTING USER
 
     if existing_user:
 
         role = existing_user.get("role")
 
-        if not role:
-
-            old_roles = existing_user.get(
-                "roles",
-                []
-            )
-
-            if len(old_roles) > 0:
-
-                role = old_roles[0]
-
-                users_col.update_one(
-
-                    {"email": email},
-
-                    {
-
-                        "$set": {
-
-                            "role": role
-
-                        }
-
-                    }
-
-                )
-
         return RedirectResponse(
-
             url=f"/dashboard?user={username}&role={role}",
-
             status_code=303
         )
 
-    # NEW USER
-
     request.session["google_user"] = username
-
     request.session["google_email"] = email
 
     return RedirectResponse(
-
         url="/select-role",
-
         status_code=303
     )
 
 # =====================================================
-# ROLE PAGE
+# SELECT ROLE
 # =====================================================
 
 @app.get("/select-role", response_class=HTMLResponse)
 def select_role_page(request: Request):
 
     return templates.TemplateResponse(
-
         request=request,
         name="select_role.html"
-
     )
 
 # =====================================================
@@ -272,7 +267,6 @@ def select_role_page(request: Request):
 def save_role(
 
     request: Request,
-
     role: str = Form(...)
 
 ):
@@ -288,24 +282,15 @@ def save_role(
     users_col.insert_one({
 
         "username": username,
-
         "email": email,
-
-        "role": role,
-
-        "auth_type": "google"
+        "role": role
 
     })
 
     notification_col.insert_one({
 
         "user": username,
-
-        "role": role,
-
-        "message": "🎉 Welcome to Smart Traceability System",
-
-        "status": "unread"
+        "message": "Welcome To Smart Traceability System"
 
     })
 
@@ -329,26 +314,51 @@ def dashboard(
 
 ):
 
-    batches = list(
+    # USER BATCHES
+
+    user_batches = list(
 
         trace_col.find(
-
             {"updated_by": user},
-
             {"_id": 0}
-
         )
 
     )
 
+    # UNIQUE BATCH IDS
+
+    batch_ids = list(set(
+        [x["batchId"] for x in user_batches]
+    ))
+
+    final_batches = []
+
+    for batch_id in batch_ids:
+
+        records = list(
+
+            trace_col.find(
+                {"batchId": batch_id},
+                {"_id": 0}
+            )
+
+        )
+
+        blockchain_status = verify_chain(records)
+
+        latest = records[-1]
+
+        latest["blockchain_valid"] = blockchain_status["valid"]
+
+        latest["blockchain_message"] = blockchain_status["message"]
+
+        final_batches.append(latest)
+
     notifications = list(
 
         notification_col.find(
-
             {"user": user},
-
             {"_id": 0}
-
         )
 
     )
@@ -363,13 +373,12 @@ def dashboard(
 
             "user": user,
             "role": role,
-            "batches": batches,
+            "batches": final_batches,
             "notifications": notifications
 
         }
 
     )
-
 # =====================================================
 # ADD TRACE
 # =====================================================
@@ -377,63 +386,143 @@ def dashboard(
 @app.post("/add")
 def add_trace(
 
-    product: str = Form(...),
-    location: str = Form(...),
-    date: str = Form(...),
-    time: str = Form(...),
-    details: str = Form(...),
-    updated_by: str = Form(...),
+    request: Request,
+
+    product: str = Form(""),
+
+    location: str = Form(""),
+
+    date: str = Form(""),
+
+    time: str = Form(""),
+
+    details: str = Form(""),
+
+    updated_by: str = Form(""),
 
     batchId: str = Form(None),
 
-    seed_date: str = Form(None),
-    harvest_date: str = Form(None),
+    # FARM
+    farmer_name: str = Form(None),
+    crop_name: str = Form(None),
+    crop_type: str = Form(None),
+    pesticides: str = Form(None),
     fertilizer: str = Form(None),
+    harvest_date: str = Form(None),
 
-    processing_method: str = Form(None),
+    # FACTORY
+    factory_name: str = Form(None),
     packaging: str = Form(None),
 
+    # TRANSPORT
+    agency_name: str = Form(None),
+    destination: str = Form(None),
+    vehicle: str = Form(None),
+    driver: str = Form(None),
+
+    # WAREHOUSE
+    warehouse_name: str = Form(None),
     storage_temp: str = Form(None),
+    shelf: str = Form(None),
     humidity: str = Form(None),
 
-    vehicle: str = Form(None),
-    driver: str = Form(None)
+    # RETAIL
+    shop_name: str = Form(None),
+    price: str = Form(None),
+    expiry_date: str = Form(None)
 
 ):
 
+    # =====================================================
+    # USER CHECK
+    # =====================================================
+
     user_data = users_col.find_one({
-
         "username": updated_by
-
     })
+
+    if not user_data:
+
+        return {
+            "message": "User not found"
+        }
 
     role = user_data["role"]
 
-    # FARM CREATE NEW BATCH
+    # =====================================================
+    # CREATE BATCH
+    # =====================================================
 
-    if role == "farm" and (
-        batchId is None or batchId == ""
-    ):
+    if role == "farm":
 
         batchId = "BATCH-" + str(uuid.uuid4())[:8].upper()
 
     else:
 
         existing_batch = trace_col.find_one({
-
             "batchId": batchId
-
         })
 
         if not existing_batch:
 
             return {
-
                 "message": "Batch not found"
-
             }
 
-    # QR
+    # =====================================================
+    # BLOCK NUMBER
+    # =====================================================
+
+    last_block = trace_col.count_documents({
+        "batchId": batchId
+    })
+
+    block_number = last_block + 1
+
+    # =====================================================
+    # PREVIOUS HASH FIXED
+    # =====================================================
+
+    previous_record = trace_col.find_one(
+        {"batchId": batchId},
+        sort=[("_id", -1)]
+    )
+
+    prev_hash = "0" * 64
+
+    if previous_record:
+
+        old_hash = previous_record.get("hash")
+
+        if old_hash:
+
+            prev_hash = old_hash
+
+    # =====================================================
+    # HASH DATA
+    # =====================================================
+
+    hash_data = {
+
+        "product": product,
+        "location": location,
+        "date": date,
+        "time": time,
+        "details": details,
+        "updated_by": updated_by,
+        "role": role,
+        "block_number": block_number
+
+    }
+
+    current_hash = compute_hash(
+        hash_data,
+        prev_hash
+    )
+
+    # =====================================================
+    # QR CODE
+    # =====================================================
 
     qr_url = f"{BASE_URL}/result?id={batchId}"
 
@@ -442,64 +531,78 @@ def add_trace(
     qr_filename = f"{batchId}.png"
 
     qr_path = os.path.join(
-
-        "static",
-        "qr",
+        "static/qr",
         qr_filename
-
     )
 
     qr_img.save(qr_path)
 
-    # SAVE DATA
+    # =====================================================
+    # SAVE DATABASE
+    # =====================================================
 
     trace_col.insert_one({
 
         "batchId": batchId,
 
         "product": product,
-
         "location": location,
-
         "date": date,
-
         "time": time,
-
         "details": details,
 
         "updated_by": updated_by,
-
         "role": role,
 
-        "seed_date": seed_date,
-        "harvest_date": harvest_date,
+        # FARM
+        "farmer_name": farmer_name,
+        "crop_name": crop_name,
+        "crop_type": crop_type,
+        "pesticides": pesticides,
         "fertilizer": fertilizer,
+        "harvest_date": harvest_date,
 
-        "processing_method": processing_method,
+        # FACTORY
+        "factory_name": factory_name,
         "packaging": packaging,
 
-        "storage_temp": storage_temp,
-        "humidity": humidity,
-
+        # TRANSPORT
+        "agency_name": agency_name,
+        "destination": destination,
         "vehicle": vehicle,
         "driver": driver,
 
-        "ai_status": "Pending",
-        "ai_reason": "Not analyzed",
+        # WAREHOUSE
+        "warehouse_name": warehouse_name,
+        "storage_temp": storage_temp,
+        "shelf": shelf,
+        "humidity": humidity,
+
+        # RETAIL
+        "shop_name": shop_name,
+        "price": price,
+        "expiry_date": expiry_date,
+
+        # BLOCKCHAIN
+        "block_number": block_number,
+        "hash": current_hash,
+        "prev_hash": prev_hash,
+
+        "status": "Verified",
 
         "qr": f"/static/qr/{qr_filename}"
 
     })
 
+    # =====================================================
+    # NOTIFICATION
+    # =====================================================
+
     notification_col.insert_one({
 
         "user": updated_by,
 
-        "role": role,
-
-        "message": f"📦 Batch {batchId} Updated Successfully",
-
-        "status": "unread"
+        "message": f"{role.upper()} updated batch {batchId}"
 
     })
 
@@ -511,130 +614,7 @@ def add_trace(
     )
 
 # =====================================================
-# AI ANALYSIS
-# =====================================================
-
-@app.post("/ai-analysis")
-async def ai_analysis(
-
-    batchId: str = Form(...),
-
-    report: UploadFile = File(...)
-
-):
-
-    # SAVE FILE
-
-    file_path = f"uploads/{report.filename}"
-
-    with open(file_path, "wb") as f:
-
-        content = await report.read()
-
-        f.write(content)
-
-    extracted_text = ""
-
-    # PDF READ
-
-    if report.filename.endswith(".pdf"):
-
-        with pdfplumber.open(file_path) as pdf:
-
-            for page in pdf.pages:
-
-                text = page.extract_text()
-
-                if text:
-                    extracted_text += text
-
-   
-
-    # AI LOGIC
-
-    status = "VERIFIED"
-
-    reason = "Processed product matches farmer batch"
-
-    text_lower = extracted_text.lower()
-
-    if "high chemical" in text_lower:
-
-        status = "NOT VERIFIED"
-
-        reason = "High chemical content detected"
-
-    if "unsafe" in text_lower:
-
-        status = "NOT VERIFIED"
-
-        reason = "Unsafe food detected"
-
-    if "contaminated" in text_lower:
-
-        status = "NOT VERIFIED"
-
-        reason = "Food contamination detected"
-
-    # UPDATE DB
-
-    trace_col.update_one(
-
-        {"batchId": batchId},
-
-        {
-
-            "$set": {
-
-                "ai_status": status,
-
-                "ai_reason": reason,
-
-                "lab_report": report.filename
-
-            }
-
-        }
-
-    )
-
-    batch = trace_col.find_one({
-
-        "batchId": batchId
-
-    })
-
-    # NOTIFICATION
-
-    if status == "VERIFIED":
-
-        message = "🎉 Congratulations! Product Successfully Verified"
-
-    else:
-
-        message = f"⚠ Verification Failed : {reason}"
-
-    notification_col.insert_one({
-
-        "user": batch["updated_by"],
-
-        "role": "factory",
-
-        "message": message,
-
-        "status": "unread"
-
-    })
-
-    return RedirectResponse(
-
-        url=f"/dashboard?user={batch['updated_by']}&role=factory",
-
-        status_code=303
-    )
-
-# =====================================================
-# RESULT PAGE
+# RESULT
 # =====================================================
 
 @app.get("/result", response_class=HTMLResponse)
@@ -648,14 +628,13 @@ def result(
     trace_data = list(
 
         trace_col.find(
-
             {"batchId": id},
-
             {"_id": 0}
-
         )
 
     )
+
+    chain_status = verify_chain(trace_data)
 
     return templates.TemplateResponse(
 
@@ -666,10 +645,45 @@ def result(
         context={
 
             "batch": id,
-            "trace_data": trace_data
+            "trace_data": trace_data,
+            "chain_status": chain_status
 
         }
 
+    )
+
+# =====================================================
+# VERIFY
+# =====================================================
+
+@app.get("/verify/{batch_id}")
+def verify(batch_id: str):
+
+    trace_data = list(
+
+        trace_col.find(
+            {"batchId": batch_id},
+            {"_id": 0}
+        )
+
+    )
+
+    result = verify_chain(trace_data)
+
+    return result
+
+# =====================================================
+# LOGOUT
+# =====================================================
+
+@app.get("/logout")
+def logout(request: Request):
+
+    request.session.clear()
+
+    return RedirectResponse(
+        url="/",
+        status_code=303
     )
 
 # =====================================================
@@ -680,7 +694,5 @@ def result(
 def health():
 
     return {
-
         "status": "running"
-
     }
