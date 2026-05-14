@@ -8,10 +8,12 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>Dashboard</title>
+<title>Smart Traceability Dashboard</title>
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
 
@@ -23,329 +25,371 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 }
 
 body{
-
-    background:#f1f5f9;
-
+    background:#eef2ff;
     display:flex;
-
-    min-height:100vh;
 }
 
-/* ================= SIDEBAR ================= */
+/* ================================================= */
+/* SIDEBAR */
+/* ================================================= */
 
 .sidebar{
-
     width:270px;
-
-    background:#0f172a;
-
-    color:white;
-
+    background:#172554;
+    min-height:100vh;
     padding:30px 20px;
+    position:fixed;
+    left:0;
+    top:0;
 }
 
 .logo{
+    margin-bottom:40px;
+}
 
-    font-size:28px;
-
-    font-weight:bold;
-
-    margin-bottom:45px;
-
-    text-align:center;
+.logo h1{
+    color:white;
+    font-size:32px;
 }
 
 .sidebar a{
-
     display:flex;
-
     align-items:center;
-
     gap:14px;
-
-    text-decoration:none;
-
     color:white;
-
+    text-decoration:none;
     padding:16px;
-
-    border-radius:15px;
-
-    margin-bottom:12px;
-
+    border-radius:16px;
+    margin-bottom:15px;
     transition:0.3s;
+    font-weight:bold;
 }
 
 .sidebar a:hover{
-
-    background:#1e293b;
+    background:#2563eb;
 }
 
-/* ================= MAIN ================= */
+/* ================================================= */
+/* PAGE */
+/* ================================================= */
 
-.main{
-
-    flex:1;
-
-    padding:35px;
+.page{
+    margin-left:290px;
+    width:100%;
+    padding:30px;
 }
 
-/* ================= TOP ================= */
+/* ================================================= */
+/* TOPBAR */
+/* ================================================= */
 
 .topbar{
-
     display:flex;
-
     justify-content:space-between;
-
     align-items:center;
-
     margin-bottom:35px;
 }
 
-.user-box{
+.top-title h1{
+    color:#172554;
+    font-size:40px;
+}
 
+.top-title p{
+    color:#666;
+    margin-top:6px;
+}
+
+.logout-btn{
+    text-decoration:none;
+    background:#ef4444;
+    color:white;
+    padding:14px 24px;
+    border-radius:14px;
+    font-weight:bold;
+}
+
+/* ================================================= */
+/* CARD */
+/* ================================================= */
+
+.dashboard-card{
     background:white;
-
-    padding:18px 25px;
-
-    border-radius:18px;
-
-    box-shadow:
-    0 5px 15px rgba(0,0,0,0.05);
-}
-
-.user-box h2{
-
-    color:#0f172a;
-
-    margin-bottom:5px;
-}
-
-.user-box p{
-
-    color:#64748b;
-}
-
-/* ================= CARDS ================= */
-
-.cards{
-
-    display:grid;
-
-    grid-template-columns:
-    repeat(auto-fit,minmax(220px,1fr));
-
-    gap:20px;
-
+    border-radius:30px;
+    padding:35px;
     margin-bottom:35px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
-.card{
-
-    background:white;
-
-    padding:28px;
-
-    border-radius:22px;
-
-    box-shadow:
-    0 5px 15px rgba(0,0,0,0.05);
-
-    transition:0.3s;
+.dashboard-title{
+    margin-bottom:30px;
 }
 
-.card:hover{
-
-    transform:translateY(-5px);
-}
-
-.card i{
-
-    font-size:34px;
-
-    margin-bottom:15px;
-
-    color:#2563eb;
-}
-
-.card h2{
-
-    color:#0f172a;
-
+.dashboard-title h1{
+    color:#172554;
     margin-bottom:8px;
 }
 
-.card p{
+/* ================================================= */
+/* PROFILE */
+/* ================================================= */
 
-    color:#64748b;
-}
-
-/* ================= FORM ================= */
-
-.section{
-
-    background:white;
-
-    padding:30px;
-
-    border-radius:25px;
-
-    margin-bottom:35px;
-
-    box-shadow:
-    0 5px 15px rgba(0,0,0,0.05);
-}
-
-.section h2{
-
-    margin-bottom:25px;
-
-    color:#0f172a;
-}
-
-.form-grid{
-
+.profile-grid{
     display:grid;
-
     grid-template-columns:
     repeat(auto-fit,minmax(250px,1fr));
 
-    gap:18px;
+    gap:25px;
 }
 
-input,
-textarea,
-select{
+.profile-card{
+    background:#f8fafc;
+    padding:25px;
+    border-radius:22px;
+}
 
+.profile-card h2{
+    color:#172554;
+    margin-bottom:12px;
+}
+
+/* ================================================= */
+/* FORM */
+/* ================================================= */
+
+.dashboard-form{
+    display:flex;
+    flex-direction:column;
+    gap:25px;
+}
+
+.form-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+}
+
+.input-box{
+    display:flex;
+    flex-direction:column;
+}
+
+.input-box label{
+    margin-bottom:10px;
+    font-weight:bold;
+    color:#172554;
+}
+
+.input-icon{
+    position:relative;
+}
+
+.input-icon i{
+    position:absolute;
+    top:18px;
+    left:18px;
+    color:#2563eb;
+}
+
+.input-icon input{
     width:100%;
-
-    padding:15px;
-
-    border:1px solid #cbd5e1;
-
-    border-radius:14px;
-
+    padding:16px 16px 16px 50px;
+    border:none;
+    border-radius:16px;
+    background:#eef2ff;
     outline:none;
 }
 
 textarea{
-
+    border:none;
+    background:#eef2ff;
+    border-radius:18px;
+    padding:18px;
+    min-height:130px;
     resize:none;
-
-    height:120px;
+    outline:none;
 }
 
-button{
-
+.submit-btn{
     border:none;
-
     background:#2563eb;
-
     color:white;
-
-    padding:16px 28px;
-
-    border-radius:14px;
-
-    font-size:16px;
-
+    padding:18px;
+    border-radius:18px;
+    font-size:18px;
     font-weight:bold;
-
     cursor:pointer;
+}
 
-    margin-top:20px;
+.submit-btn:hover{
+    background:#1e3a8a;
+}
 
+/* ================================================= */
+/* QR SCAN */
+/* ================================================= */
+
+.scan-box{
+    background:#eff6ff;
+    border:2px dashed #2563eb;
+    padding:25px;
+    border-radius:20px;
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.scan-btn{
+    margin-top:15px;
+    border:none;
+    background:#2563eb;
+    color:white;
+    padding:14px 26px;
+    border-radius:14px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+#reader{
+    width:300px;
+    margin:20px auto;
+    display:none;
+}
+
+/* ================================================= */
+/* BATCHES */
+/* ================================================= */
+
+.batch-grid{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(320px,1fr));
+
+    gap:25px;
+}
+
+.batch-card{
+    background:#f8fafc;
+    border-radius:24px;
+    padding:25px;
+    border:2px solid transparent;
     transition:0.3s;
 }
 
-button:hover{
-
-    background:#1d4ed8;
+.batch-card:hover{
+    border-color:#2563eb;
 }
 
-/* ================= TABLE ================= */
-
-table{
-
-    width:100%;
-
-    border-collapse:collapse;
-}
-
-th,
-td{
-
-    padding:15px;
-
-    text-align:left;
-
-    border-bottom:1px solid #e2e8f0;
-}
-
-th{
-
-    background:#eff6ff;
-
-    color:#1e3a8a;
-}
-
-/* ================= NOTIFICATION ================= */
-
-.note{
-
-    background:#eff6ff;
-
-    padding:16px;
-
-    border-radius:14px;
-
+.batch-card h2{
+    color:#172554;
     margin-bottom:12px;
-
-    color:#1e3a8a;
-}
-
-/* ================= BATCH CARD ================= */
-
-.batch-card{
-
-    background:#f8fafc;
-
-    padding:20px;
-
-    border-radius:18px;
-
-    margin-bottom:18px;
-
-    border-left:6px solid #2563eb;
-}
-
-.batch-card h3{
-
-    margin-bottom:10px;
-
-    color:#0f172a;
 }
 
 .batch-card p{
-
-    margin-bottom:6px;
-
-    color:#475569;
+    color:#555;
+    margin-bottom:8px;
 }
 
-/* ================= RESPONSIVE ================= */
+.qr-thumb{
+    width:90px;
+    margin-bottom:15px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.batch-btns{
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-top:18px;
+}
+
+.view-btn{
+    text-decoration:none;
+    background:#2563eb;
+    color:white;
+    padding:10px 15px;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.verify-btn{
+    background:#16a34a;
+}
+
+/* ================================================= */
+/* NOTIFICATION */
+/* ================================================= */
+
+.note-card{
+    background:#eff6ff;
+    padding:20px;
+    border-radius:18px;
+    margin-bottom:18px;
+}
+
+/* ================================================= */
+/* MODAL */
+/* ================================================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-box{
+    background:white;
+    padding:35px;
+    border-radius:28px;
+    text-align:center;
+}
+
+.modal-box img{
+    width:260px;
+    margin-top:20px;
+}
+
+.close-btn{
+    margin-top:20px;
+    border:none;
+    background:#ef4444;
+    color:white;
+    padding:12px 24px;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+/* ================================================= */
+/* RESPONSIVE */
+/* ================================================= */
 
 @media(max-width:900px){
 
     body{
-
         flex-direction:column;
     }
 
     .sidebar{
-
+        position:relative;
         width:100%;
+        min-height:auto;
+    }
+
+    .page{
+        margin-left:0;
+    }
+
+    .form-row{
+        grid-template-columns:1fr;
     }
 }
 
@@ -355,383 +399,434 @@ th{
 
 <body>
 
-<!-- ================= SIDEBAR ================= -->
+<!-- ================================================= -->
+<!-- SIDEBAR -->
+<!-- ================================================= -->
 
 <div class="sidebar">
 
     <div class="logo">
 
-        Smart Traceability
+        <h1>
+            Trace System
+        </h1>
 
     </div>
 
-    <a href="#">
-
-        <i class="fa fa-home"></i>
-        Dashboard
-
-    </a>
-
-    <a href="#">
-
+    <a href="#profile">
         <i class="fa fa-user"></i>
         My Profile
-
     </a>
 
     <a href="#create">
-
-        <i class="fa fa-plus"></i>
-        Create Batch
-
+        <i class="fa fa-plus-circle"></i>
+        Create / Update Batch
     </a>
 
     <a href="#batches">
-
         <i class="fa fa-box"></i>
         My Batches
-
     </a>
 
     <a href="#notifications">
-
         <i class="fa fa-bell"></i>
         Notifications
-
     </a>
 
-    {% if role == "factory" %}
-
-    <a href="#ai">
-
-        <i class="fa fa-robot"></i>
-        AI Analysis
-
+    <a href="/logout">
+        <i class="fa fa-right-from-bracket"></i>
+        Logout
     </a>
-
-    {% endif %}
 
 </div>
 
-<!-- ================= MAIN ================= -->
+<!-- ================================================= -->
+<!-- PAGE -->
+<!-- ================================================= -->
 
-<div class="main">
+<div class="page">
 
+    <!-- ================================================= -->
     <!-- TOPBAR -->
+    <!-- ================================================= -->
 
     <div class="topbar">
 
-        <div class="user-box">
+        <div class="top-title">
 
-            <h2>
-
+            <h1>
                 Welcome {{user}}
-
-            </h2>
+            </h1>
 
             <p>
-
-                Role : {{role}}
-
+                Blockchain Food Supply Chain Dashboard
             </p>
+
+        </div>
+
+        <a href="/logout"
+           class="logout-btn">
+
+            Logout
+
+        </a>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- PROFILE -->
+    <!-- ================================================= -->
+
+    <div class="dashboard-card"
+         id="profile">
+
+        <div class="dashboard-title">
+
+            <h1>
+                My Profile
+            </h1>
+
+        </div>
+
+        <div class="profile-grid">
+
+            <div class="profile-card">
+
+                <h2>
+                    {{user}}
+                </h2>
+
+                <p>
+                    <b>Role:</b>
+                    {{role}}
+                </p>
+
+            </div>
+
+            <div class="profile-card">
+
+                <h2>
+                    Blockchain Enabled
+                </h2>
+
+                <p>
+                    Supply Chain Security Active
+                </p>
+
+            </div>
 
         </div>
 
     </div>
 
-    <!-- CARDS -->
+    <!-- ================================================= -->
+    <!-- CREATE / UPDATE -->
+    <!-- ================================================= -->
 
-    <div class="cards">
-
-        <div class="card">
-
-            <i class="fa fa-box"></i>
-
-            <h2>
-
-                {{batches|length}}
-
-            </h2>
-
-            <p>
-
-                Total Batches
-
-            </p>
-
-        </div>
-
-        <div class="card">
-
-            <i class="fa fa-check-circle"></i>
-
-            <h2>
-
-                Verified
-
-            </h2>
-
-            <p>
-
-                AI Verified Products
-
-            </p>
-
-        </div>
-
-        <div class="card">
-
-            <i class="fa fa-bell"></i>
-
-            <h2>
-
-                {{notifications|length}}
-
-            </h2>
-
-            <p>
-
-                Notifications
-
-            </p>
-
-        </div>
-
-    </div>
-
-    <!-- CREATE BATCH -->
-
-    <div class="section"
+    <div class="dashboard-card"
          id="create">
 
-        <h2>
-
-            Create / Update Batch
-
-        </h2>
-
-        <form action="/add"
-              method="post">
-
-            <div class="form-grid">
-
-                <input type="hidden"
-                       name="updated_by"
-                       value="{{user}}">
-
-                <input type="text"
-                       name="batchId"
-                       placeholder="Batch ID (Leave Empty For Farmer)">
-
-                <input type="text"
-                       name="product"
-                       placeholder="Product Name"
-                       required>
-
-                <input type="text"
-                       name="location"
-                       placeholder="Location"
-                       required>
-
-                <input type="date"
-                       name="date"
-                       required>
-
-                <input type="time"
-                       name="time"
-                       required>
-
-                {% if role == "farm" %}
-
-                <input type="date"
-                       name="seed_date"
-                       placeholder="Seed Date">
-
-                <input type="date"
-                       name="harvest_date"
-                       placeholder="Harvest Date">
-
-                <input type="text"
-                       name="fertilizer"
-                       placeholder="Fertilizer">
-
-                {% endif %}
-
-                {% if role == "factory" %}
-
-                <input type="text"
-                       name="processing_method"
-                       placeholder="Processing Method">
-
-                <input type="text"
-                       name="packaging"
-                       placeholder="Packaging Details">
-
-                {% endif %}
-
-                {% if role == "warehouse" %}
-
-                <input type="text"
-                       name="storage_temp"
-                       placeholder="Storage Temperature">
-
-                <input type="text"
-                       name="humidity"
-                       placeholder="Humidity">
-
-                {% endif %}
-
-                {% if role == "transport" %}
-
-                <input type="text"
-                       name="vehicle"
-                       placeholder="Vehicle Number">
-
-                <input type="text"
-                       name="driver"
-                       placeholder="Driver Name">
-
-                {% endif %}
-
-            </div>
-
-            <textarea name="details"
-                      placeholder="Details"></textarea>
-
-            <button type="submit">
-
-                Save Batch
-
-            </button>
-
-        </form>
-
-    </div>
-
-    <!-- FACTORY AI -->
-
-    {% if role == "factory" %}
-
-    <div class="section"
-         id="ai">
-
-        <h2>
-
-            AI Lab Analysis
-
-        </h2>
-
-        <form action="/ai-analysis"
-              method="post"
-              enctype="multipart/form-data">
-
-            <div class="form-grid">
-
-                <input type="text"
-                       name="batchId"
-                       placeholder="Batch ID"
-                       required>
-
-                <input type="file"
-                       name="report"
-                       accept=".pdf,image/*"
-                       required>
-
-            </div>
-
-            <button type="submit">
-
-                Run AI Analysis
-
-            </button>
-
-        </form>
-
-    </div>
-
-    {% endif %}
-
-    <!-- BATCHES -->
-
-    <div class="section"
-         id="batches">
-
-        <h2>
-
-            My Batches
-
-        </h2>
-
-        {% for batch in batches %}
-
-        <div class="batch-card">
-
-            <h3>
-
-                {{batch.product}}
-
-            </h3>
-
-            <p>
-
-                Batch ID :
-                {{batch.batchId}}
-
-            </p>
-
-            <p>
-
-                Location :
-                {{batch.location}}
-
-            </p>
-
-            <p>
-
-                AI Status :
-                {{batch.ai_status}}
-
-            </p>
-
-            <p>
-
-                Reason :
-                {{batch.ai_reason}}
-
-            </p>
-
-            <p>
-
-                Role :
-                {{batch.role}}
-
-            </p>
-
-            <img src="{{batch.qr}}"
-                 width="120">
+        <div class="dashboard-title">
+
+            <h1>
+                Create / Update Batch
+            </h1>
 
         </div>
 
-        {% endfor %}
+        {% if role != "farm" %}
+
+        <div class="scan-box">
+
+            <p>
+                <i class="fa fa-qrcode"></i>
+                Scan QR To Get Batch ID
+            </p>
+
+            <button class="scan-btn"
+                    onclick="startScan()">
+
+                Start QR Scan
+
+            </button>
+
+            <div id="reader"></div>
+
+        </div>
+
+        {% endif %}
+
+        <form action="/add"
+              method="post"
+              class="dashboard-form">
+
+            <input type="hidden"
+                   name="updated_by"
+                   value="{{user}}">
+
+            <div class="form-row">
+
+                {% if role != "farm" %}
+
+                <div class="input-box">
+
+                    <label>
+                        Batch ID
+                    </label>
+
+                    <div class="input-icon">
+
+                        <i class="fa fa-barcode"></i>
+
+                        <input type="text"
+                               name="batchId"
+                               id="batchIdInput"
+                               required>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+                <div class="input-box">
+
+                    <label>
+                        Product Name
+                    </label>
+
+                    <div class="input-icon">
+
+                        <i class="fa fa-box"></i>
+
+                        <input type="text"
+                               name="product"
+                               required>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="input-box">
+
+                    <label>
+                        Location
+                    </label>
+
+                    <div class="input-icon">
+
+                        <i class="fa fa-location-dot"></i>
+
+                        <input type="text"
+                               name="location">
+
+                    </div>
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+                        Date
+                    </label>
+
+                    <div class="input-icon">
+
+                        <i class="fa fa-calendar"></i>
+
+                        <input type="date"
+                               name="date">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="input-box">
+
+                    <label>
+                        Time
+                    </label>
+
+                    <div class="input-icon">
+
+                        <i class="fa fa-clock"></i>
+
+                        <input type="time"
+                               name="time">
+
+                    </div>
+
+                </div>
+
+                <div class="input-box">
+
+                    <label>
+                        Details
+                    </label>
+
+                    <div class="input-icon">
+
+                        <i class="fa fa-circle-info"></i>
+
+                        <input type="text"
+                               name="details">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button type="submit"
+                    class="submit-btn">
+
+                Save Supply Chain Data
+
+            </button>
+
+        </form>
 
     </div>
 
-    <!-- NOTIFICATIONS -->
+    <!-- ================================================= -->
+    <!-- MY BATCHES -->
+    <!-- ================================================= -->
 
-    <div class="section"
+    <div class="dashboard-card"
+         id="batches">
+
+        <div class="dashboard-title">
+
+            <h1>
+                My Batches
+            </h1>
+
+        </div>
+
+        <div class="batch-grid">
+
+            {% for batch in batches %}
+
+            <div class="batch-card">
+
+                {% if batch.qr %}
+
+                <img src="{{batch.qr}}"
+                     class="qr-thumb"
+                     onclick="showQR('{{batch.qr}}')">
+
+                {% endif %}
+
+                <h2>
+                    {{batch.batchId}}
+                </h2>
+
+                <p>
+                    <b>Role:</b>
+                    {{batch.role}}
+                </p>
+
+                <p>
+                    <b>Product:</b>
+                    {{batch.product}}
+                </p>
+
+                <p>
+                    <b>Date:</b>
+                    {{batch.date}}
+                </p>
+
+                <!-- BLOCKCHAIN -->
+
+                <p>
+
+                    <b>Blockchain:</b>
+
+                    {% if batch.blockchain_valid %}
+
+                    <span style="color:green;font-weight:bold;">
+
+                        Secure ✅
+
+                    </span>
+
+                    {% else %}
+
+                    <span style="color:red;font-weight:bold;">
+
+                        Tampered ❌
+
+                    </span>
+
+                    {% endif %}
+
+                </p>
+
+                <p>
+                    {{batch.blockchain_message}}
+                </p>
+
+                <div class="batch-btns">
+
+                    <a href="/result?id={{batch.batchId}}"
+                       class="view-btn">
+
+                        View Journey
+
+                    </a>
+
+                    <a href="/verify/{{batch.batchId}}"
+                       class="view-btn verify-btn"
+                       target="_blank">
+
+                        Verify Blockchain
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- ================================================= -->
+    <!-- NOTIFICATIONS -->
+    <!-- ================================================= -->
+
+    <div class="dashboard-card"
          id="notifications">
 
-        <h2>
+        <div class="dashboard-title">
 
-            Notifications
+            <h1>
+                Notifications
+            </h1>
 
-        </h2>
+        </div>
 
         {% for note in notifications %}
 
-        <div class="note">
+        <div class="note-card">
 
-            {{note.message}}
+            <p>
+
+                <i class="fa fa-bell"></i>
+
+                {{note.message}}
+
+            </p>
 
         </div>
 
@@ -740,6 +835,105 @@ th{
     </div>
 
 </div>
+
+<!-- ================================================= -->
+<!-- QR MODAL -->
+<!-- ================================================= -->
+
+<div class="modal"
+     id="qrModal">
+
+    <div class="modal-box">
+
+        <h2>
+            QR Code
+        </h2>
+
+        <img id="modalQR">
+
+        <br>
+
+        <button class="close-btn"
+                onclick="closeModal()">
+
+            Close
+
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+let html5QrCode;
+
+function startScan(){
+
+    document.getElementById(
+        "reader"
+    ).style.display = "block";
+
+    html5QrCode = new Html5Qrcode(
+        "reader"
+    );
+
+    html5QrCode.start(
+
+        { facingMode: "environment" },
+
+        {
+            fps: 10,
+            qrbox: 250
+        },
+
+        function(decodedText){
+
+            let batchId = decodedText;
+
+            if(decodedText.includes("?id=")){
+
+                batchId =
+                decodedText.split("?id=")[1];
+            }
+
+            document.getElementById(
+                "batchIdInput"
+            ).value = batchId;
+
+            html5QrCode.stop();
+
+            document.getElementById(
+                "reader"
+            ).style.display = "none";
+
+            alert(
+                "Batch ID : " + batchId
+            );
+        }
+
+    );
+}
+
+function showQR(src){
+
+    document.getElementById(
+        "modalQR"
+    ).src = src;
+
+    document.getElementById(
+        "qrModal"
+    ).classList.add("active");
+}
+
+function closeModal(){
+
+    document.getElementById(
+        "qrModal"
+    ).classList.remove("active");
+}
+
+</script>
 
 </body>
 
