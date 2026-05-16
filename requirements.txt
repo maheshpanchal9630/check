@@ -3,10 +3,10 @@ uvicorn
 jinja2
 python-multipart
 pymongo
-dnspython
-authlib
-itsdangerous
 qrcode
 pillow
-requests
+authlib
+itsdangerous
 httpx
+starlette
+dnspython
