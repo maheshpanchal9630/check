@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from pymongo import MongoClient
-
+from datetime import datetime
 from authlib.integrations.starlette_client import OAuth
 from starlette.config import Config
 from starlette.middleware.sessions import SessionMiddleware
@@ -302,11 +302,15 @@ def save_role(
 
     users_col.insert_one({
 
-        "username": username,
-        "email": email,
-        "role": role
+    "username": username,
 
-    })
+    "email": email,
+
+    "role": role,
+
+    "created_at": datetime.utcnow()
+
+})
 
     notification_col.insert_one({
 
@@ -592,7 +596,7 @@ def add_trace(
         "prev_hash": prev_hash,
 
         "status": "Verified",
-
+        "created_at": datetime.utcnow(),
         "qr": f"/static/qr/{qr_filename}"
 
     })
